@@ -1,0 +1,33 @@
+services:
+  spring-mysql:
+    # Image名
+    image: compose-1
+    # Container名
+    container_name: spring-container
+    # Dockerファイルからビルドする
+    build: .
+    # Port定義
+    ports:
+      - "9008:8080"
+    networks:
+      - employee-mysql
+    #　アプリ内利用するの変数
+    environment:
+      DATASOURCE: jdbc:mysql://mysql-database:3306/testdb?allowPublicKeyRetrieval=true&useSSL=false
+    # データベースを先に起動すると定義
+    depends_on:
+      - mysql-database
+
+  mysql-database:
+    # Image名 (DockerHubからpullする)
+    image: mysql:8
+    container_name: mysql-container
+    restart: always
+    networks:
+      - employee-mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+
+
+networks:
+  employee-mysql: 
